@@ -73,14 +73,13 @@ abstract class AbstractCryptoConverter<T> implements AttributeConverter<T, Strin
     public T convertToEntityAttribute(String dbData) {
         if (isNotEmpty(DATABASE_ENCRYPTION_KEY) && isNotEmpty(dbData)) {
             try {
-                String[] test = dbData.split(CONCATENATION);
-                Cipher cipher = cipherInitializer.prepareAndInitCipher(
-                        Cipher.DECRYPT_MODE,
-                        DATABASE_ENCRYPTION_KEY,
-                        Base64.getDecoder().decode(test[1])
-                );
+                String[] splitDbData = dbData.split(CONCATENATION);
+                String cipherText = splitDbData[0];
+                byte[] iv = Base64.getDecoder().decode(splitDbData[1]);
 
-                return this.decrypt(cipher, test[0]);
+                Cipher cipher = cipherInitializer.prepareAndInitCipher(Cipher.DECRYPT_MODE, DATABASE_ENCRYPTION_KEY, iv);
+
+                return this.decrypt(cipher, cipherText);
             } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException |
                     NoSuchPaddingException | IllegalBlockSizeException e) {
                 throw new RuntimeException(e);
