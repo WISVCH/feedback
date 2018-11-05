@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -30,8 +31,10 @@ class CipherInitializer {
      *
      * @return AlgorithmParameterSpec
      */
-    private AlgorithmParameterSpec getAlgorithmParameterSpec(Cipher cipher) {
+    private AlgorithmParameterSpec getRandomIv(Cipher cipher) {
+        SecureRandom randomSecureRandom = new SecureRandom();
         byte[] iv = new byte[cipher.getBlockSize()];
+        randomSecureRandom.nextBytes(iv);
 
         return new IvParameterSpec(iv);
     }
@@ -41,6 +44,7 @@ class CipherInitializer {
      *
      * @param encryptionMode of type int
      * @param key            of type String
+     * @param iv             of type byte[]
      *
      * @return Cipher
      *
@@ -49,12 +53,13 @@ class CipherInitializer {
      * @throws NoSuchAlgorithmException           when the algorithm does not exists
      * @throws InvalidAlgorithmParameterException when the mode of operation does not exists
      */
-    Cipher prepareAndInitCipher(int encryptionMode, String key) throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
-                                                                       InvalidAlgorithmParameterException {
+    Cipher prepareAndInitCipher(int encryptionMode, String key, byte[] iv)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+                   InvalidAlgorithmParameterException {
         Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE_NAME);
         Key secretKey = new SecretKeySpec(key.getBytes(), SECRET_KEY_ALGORITHM);
 
-        AlgorithmParameterSpec algorithmParameters = this.getAlgorithmParameterSpec(cipher);
+        AlgorithmParameterSpec algorithmParameters = iv == null ? this.getRandomIv(cipher) : new IvParameterSpec(iv);
         cipher.init(encryptionMode, secretKey, algorithmParameters);
 
         return cipher;

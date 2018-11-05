@@ -19,6 +19,14 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 abstract class AbstractCryptoConverter<T> implements AttributeConverter<T, String> {
 
+    /**
+     * Used for concatenating cipher text and iv together.
+     * This will not cause issues when the text contains hashtags,
+     * since a Base64 encoded string cannot contain hashtags.
+     * https://en.wikipedia.org/wiki/Base64#Base64_table
+     */
+    private static final String CONCATENATION = "####";
+
     /** CipherInitializer. */
     private CipherInitializer cipherInitializer;
 
@@ -42,9 +50,9 @@ abstract class AbstractCryptoConverter<T> implements AttributeConverter<T, Strin
     public String convertToDatabaseColumn(T attribute) {
         if (isNotEmpty(DATABASE_ENCRYPTION_KEY) && isNotNullOrEmpty(attribute)) {
             try {
-                Cipher cipher = cipherInitializer.prepareAndInitCipher(Cipher.ENCRYPT_MODE, DATABASE_ENCRYPTION_KEY);
+                Cipher cipher = cipherInitializer.prepareAndInitCipher(Cipher.ENCRYPT_MODE, DATABASE_ENCRYPTION_KEY, null);
 
-                return this.encrypt(cipher, attribute);
+                return this.encrypt(cipher, attribute) + CONCATENATION + Base64.getEncoder().encodeToString(cipher.getIV());
             } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException |
                     NoSuchPaddingException | IllegalBlockSizeException e) {
                 throw new RuntimeException(e);
@@ -65,9 +73,14 @@ abstract class AbstractCryptoConverter<T> implements AttributeConverter<T, Strin
     public T convertToEntityAttribute(String dbData) {
         if (isNotEmpty(DATABASE_ENCRYPTION_KEY) && isNotEmpty(dbData)) {
             try {
-                Cipher cipher = cipherInitializer.prepareAndInitCipher(Cipher.DECRYPT_MODE, DATABASE_ENCRYPTION_KEY);
+                String[] test = dbData.split(CONCATENATION);
+                Cipher cipher = cipherInitializer.prepareAndInitCipher(
+                        Cipher.DECRYPT_MODE,
+                        DATABASE_ENCRYPTION_KEY,
+                        Base64.getDecoder().decode(test[1])
+                );
 
-                return this.decrypt(cipher, dbData);
+                return this.decrypt(cipher, test[0]);
             } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException |
                     NoSuchPaddingException | IllegalBlockSizeException e) {
                 throw new RuntimeException(e);
