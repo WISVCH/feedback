@@ -1,18 +1,27 @@
 package ch.wisv.converters;
 
+import javax.persistence.Converter;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * StringCryptoConverter.
  */
+@Converter
 public class StringCryptoConverter extends AbstractCryptoConverter<String> {
+
+    /**
+     * StringCryptoConverter constructor.
+     */
+    public StringCryptoConverter() {
+        this(new CipherInitializer());
+    }
 
     /**
      * StringCryptoConverter constructor.
      *
      * @param cipherInitializer of type CipherInitializer
      */
-    StringCryptoConverter(CipherInitializer cipherInitializer) {
+    public StringCryptoConverter(CipherInitializer cipherInitializer) {
         super(cipherInitializer);
     }
 

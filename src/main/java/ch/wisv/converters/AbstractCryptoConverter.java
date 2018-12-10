@@ -34,10 +34,17 @@ abstract class AbstractCryptoConverter<T> implements AttributeConverter<T, Strin
 
     /**
      * AbstractCryptoConverter constructor.
+     */
+    public AbstractCryptoConverter() {
+        this(new CipherInitializer());
+    }
+
+    /**
+     * AbstractCryptoConverter constructor.
      *
      * @param cipherInitializer of type CipherInitializer
      */
-    AbstractCryptoConverter(CipherInitializer cipherInitializer) {
+    public AbstractCryptoConverter(CipherInitializer cipherInitializer) {
         this.cipherInitializer = cipherInitializer;
     }
 
