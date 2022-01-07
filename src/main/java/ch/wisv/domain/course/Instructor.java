@@ -9,16 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import lombok.Data;
 
-<<<<<<< HEAD
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotEmpty;
-import java.util.List;
-
-=======
->>>>>>> 1e0dce1 (Add instructor encryption for email and name)
 /**
  * Created by Tom on 14/05/2017.
  */
