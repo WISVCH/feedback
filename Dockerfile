@@ -1,4 +1,4 @@
-FROM wisvch/openjdk:11-jdk AS builder
+FROM openjdk:11-jdk-buster AS builder
 COPY . /src
 WORKDIR /src
 RUN ./gradlew build
