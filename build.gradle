@@ -18,9 +18,9 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
 jar {
-    baseName = 'feedback-tool'
+    baseName = 'feedback'
     version = '0.0.1'
-    archiveName = "${baseName}.${extension}"
+    archiveName = "${baseName}"
 }
 
 sourceCompatibility = 11
@@ -52,6 +52,7 @@ dependencies {
     compile 'org.projectlombok:lombok'
     compile 'org.json:json:20180813'
 
+    compile 'org.apache.commons:commons-lang3:3.7'
     runtime 'org.postgresql:postgresql'
     runtime 'com.h2database:h2'
 
