@@ -1,7 +1,6 @@
 package ch.wisv.controller;
 
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +26,7 @@ public class GlobalErrorController extends AbstractErrorController {
     public String error(Model model, HttpServletRequest request) {
 
         // {error={timestamp=Mon Nov 02 12:40:50 EST 2015, status=404, error=Not Found, message=No message available, path=/foo}}
-        Map<String, Object> error = getErrorAttributes(request, ErrorAttributeOptions.defaults());
+        Map<String, Object> error = getErrorAttributes(request, true);
 
         model.addAttribute("timestamp", error.get("timestamp"));
         model.addAttribute("status", error.get("status"));
@@ -38,6 +37,7 @@ public class GlobalErrorController extends AbstractErrorController {
         return ERROR_TEMPLATE;
     }
 
+    @Override
     public String getErrorPath() {
         return ERROR_PATH;
     }
