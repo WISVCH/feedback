@@ -52,7 +52,6 @@ dependencies {
     compile 'org.projectlombok:lombok'
     compile 'org.json:json:20180813'
 
-    compile 'org.apache.commons:commons-lang3:3.7'
     runtime 'org.postgresql:postgresql'
     runtime 'com.h2database:h2'
 

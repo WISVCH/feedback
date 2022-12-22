@@ -1,0 +1,35 @@
+spring:
+  mail:
+    host: ch.tudelft.nl
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        provider:
+          wisvchconnect:
+            issuer-uri: https://connect.ch.tudelft.nl
+        registration:
+          wisvchconnect:
+            scope:
+              - openid
+              - profile
+              - email
+              - ldap
+
+wisvch:
+  connect:
+    admin-groups:
+      - chbeheer
+      - bestuur
+      - vc
+
+mailNotifications:
+  from: noreply@ch.tudelft.nl
+  to-association: bestuur@ch.tudelft.nl
+  to-education: education@ch.tudelft.nl
+  to-education-a-m: cow@ch.tudelft.nl
+  to-education-c-s: coi@ch.tudelft.nl
